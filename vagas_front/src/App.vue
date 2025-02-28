@@ -1,0 +1,33 @@
+<script>
+import Conteudo from './components/layouts/Conteudo.vue'
+import TopoPadrao from './components/layouts/TopoPadrao.vue'
+
+export default {
+  name: 'App',
+  data: () => ({
+    visibilidade: true
+  }),
+  methods: {
+    desmontarComponente() {
+      this.visibilidade = false
+    }
+  },
+  components:{
+    Conteudo,
+    TopoPadrao
+  }
+}
+</script>
+
+<template>
+  <div>
+    <h1>Componente App</h1>
+    <button @click="desmontarComponente()">Desmontar o componente Conteudo</button>
+    <topo-padrao/>
+    <conteudo v-if="visibilidade"/>
+  </div>
+</template>
+
+<style module>
+  
+</style>
