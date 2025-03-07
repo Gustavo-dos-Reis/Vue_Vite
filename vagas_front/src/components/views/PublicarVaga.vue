@@ -55,10 +55,6 @@
     </div>
 
     <div class="row mt-3">
-      {{ titulo }} | {{ descricao }} | {{ salario }} | {{ modalidade }} |
-      {{ tipo }} |
-    </div>
-    <div class="row mt-3">
       <div class="col">
         <button type="submit" class="btn btn-primary" @click="salvarVaga()">
           Cadastrar
@@ -71,31 +67,72 @@
 <script>
 export default {
   name: "PublicarVaga",
-  data: () =>({
-    titulo: '',
-    descricao: '',
-    salario: '',
-    modalidade: '',
-    tipo: '',
+  data: () => ({
+    titulo: "",
+    descricao: "",
+    salario: "",
+    modalidade: "",
+    tipo: "",
   }),
   methods: {
-    salvarVaga(){
-      let vagas = JSON.parse(localStorage.getItem('vagas'))
-      console.log(vagas)
+    salvarVaga() {
+      let tempoDecorrido = Date.now();
+      let dataAtual = new Date(tempoDecorrido);
 
-      if(!vagas) vagas = []
-      
+      let vagas = JSON.parse(localStorage.getItem("vagas"));
+      //console.log(vagas)
+
+      if (!vagas) vagas = [];
+
       vagas.push({
         titulo: this.titulo,
         descricao: this.descricao,
         salario: this.salario,
         modalidade: this.modalidade,
         tipo: this.tipo,
-    })
+        publicacao: dataAtual.toISOString(),
+      });
+
+      if (this.validaFormulario()) {
+        localStorage.setItem("vagas", JSON.stringify(vagas));
+        this.emitter.emit("alerta", {
+          tipo: 'sucesso',
+          titulo: `A vaga ${this.titulo} foi cadastrada com sucesso!`,
+          descricao:
+            "Parabéns, a vaga foi cadastrada e poderá ser consultada por milhares de profissionais em nossa plataforma",
+        });
+
+        this.resetaFormulaioCadastroVaga();
+
+      } else {
+        this.emitter.emit("alerta", {
+          tipo: 'erro',
+          titulo: '-_- Opsss... Não foi possivel realizar o cadastro!',
+          descricao: 'Parece que você esqueceu de preencher alguma informação. Faça o ajuste e tente novamente. Obrigado!'
+        });
+      }
+
       
-      localStorage.setItem('vagas', JSON.stringify(vagas))      
-    }
-  }
+    },
+    resetaFormulaioCadastroVaga() {
+      this.titulo = "",
+      this.descricao = "",
+      this.salario = "",
+      this.modalidade = "",
+      this.tipo = ""
+    },
+    validaFormulario() {
+      let valido = true;
+
+      if (this.titulo === "") valido = false;
+      if (this.descricao === "") valido = false;
+      if (this.salario === "") valido = false;
+      if (this.modalidade === "") valido = false;
+      if (this.tipo === "") valido = false;
+
+      return valido;
+    },
+  },
 };
 </script>
 
